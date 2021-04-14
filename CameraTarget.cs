@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [System.Serializable]
-public class TargetTransform
+public sealed class TargetTransform
 {
     public Vector3 position;
     public Vector3 rotationEulerAngles;
@@ -33,53 +33,52 @@ public class CameraTarget : MonoBehaviour
     }
     #endregion
 
-    [SerializeField]
-    private GameObject playerCar;
-    [SerializeField]
-    private GameObject lastTile;
-    [SerializeField]
-    private TargetTransform mainTargetTransformToPlayer;
+    #region Fields
+    [SerializeField] private GameObject playerCar;
+    [SerializeField] private GameObject lastTile;
+    [SerializeField] private TargetTransform mainTargetTransformToPlayer;
+    [SerializeField] private TargetTransform targetTransformToLastTile;
+    #endregion
 
-
-
-    [SerializeField]
-    private TargetTransform targetTransformToLastTile;
-
+    #region Properties
     private GamePhase Phase => GameManager.Singleton.Phase;
+
+    private TargetTransform ThisTargetTransform
+    {
+        get
+        {
+            if (Phase == GamePhase.Intro)
+            {
+                return new TargetTransform(new Vector3(-17, 20, 32), new Vector3(33, 150, 0), Vector3.one);
+            }
+
+            if (Phase == GamePhase.MainMenu)
+            {
+                return new TargetTransform(new Vector3(-17, 20, 32), new Vector3(33, 150, 0), Vector3.one);
+            }
+
+            if (GameManager.Singleton.IsInGame)
+            {
+                return new TargetTransform(playerCar.transform.position + mainTargetTransformToPlayer.position, new Vector3(8.5F, 0, 0), Vector3.one);
+            }
+
+            if (Phase == GamePhase.WonGame)
+            {
+                return new TargetTransform(lastTile.transform.position + targetTransformToLastTile.position, new Vector3(8.5F, 0, 0), Vector3.one);
+            }
+
+            return new TargetTransform();
+        }
+    }
+    #endregion
+
+    #region Methods
+    public void SetLastTile(GameObject tile) => lastTile = tile;
+    #endregion
 
     private void FixedUpdate()
     {
-        transform.position = targetTransform().position;
-        transform.rotation = Quaternion.Euler(targetTransform().rotationEulerAngles);
-    }
-
-    private TargetTransform targetTransform ()
-    {
-        if(Phase == GamePhase.Intro)
-        {
-            return new TargetTransform(new Vector3(-17, 20, 32), new Vector3(33, 150, 0), Vector3.one);
-        }
-
-        if(Phase == GamePhase.MainMenu)
-        {
-            return new TargetTransform(new Vector3(-17, 20, 32), new Vector3(33, 150, 0), Vector3.one);
-        }
-
-        if(GameManager.Singleton.IsInGame)
-        {
-            return new TargetTransform(playerCar.transform.position + mainTargetTransformToPlayer.position, new Vector3(8.5F, 0, 0), Vector3.one);
-        }
-
-        if (Phase == GamePhase.WonGame)
-        {
-            return new TargetTransform(lastTile.transform.position + targetTransformToLastTile.position, new Vector3(8.5F, 0, 0), Vector3.one);
-        }
-
-        return new TargetTransform();
-    }
-
-    public void SetLastTile (GameObject tile)
-    {
-        lastTile = tile;
+        transform.position = ThisTargetTransform.position;
+        transform.rotation = Quaternion.Euler(ThisTargetTransform.rotationEulerAngles);
     }
 }

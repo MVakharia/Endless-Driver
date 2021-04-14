@@ -3,17 +3,28 @@ using System.Collections;
 using AutoDriverLibrary;
 
 public enum GamePhase { Intro, MainMenu, Level, Endless, GameOver, WonGame, Challenge }
-
 public enum TestingMode { Normal, Debug }
 
 public class GameManager : MonoBehaviour
 {
+    #region Singleton
     private static GameManager singleton;
+    public static GameManager Singleton
+    {
+        get
+        {
+            if (singleton == null)
+            {
+                singleton = GameObject.FindGameObjectWithTag("Game Manager").GetComponent<GameManager>();
+            }
+            return singleton;
+        }
+    }
+    #endregion
 
+    #region Fields
     [SerializeField]
     GamePhase phase;
-    [SerializeField]
-    GameObject player;
     [SerializeField]
     Counter score;
     [SerializeField]
@@ -26,8 +37,10 @@ public class GameManager : MonoBehaviour
     bool loadDataOnLaunch;
     [SerializeField]
     PlayerStatisticsData scoreData;
+    #endregion
 
-    public GameObject Player { get { if (player == null) { player = PlayerVehicleInteraction.Singleton.gameObject; } return player; } }
+    #region Properties
+    public GameObject Player => PlayerVehicleInteraction.Singleton.gameObject;
     public GamePhase Phase => phase;
     public Counter Score => score;
     public bool IsInGame => Phase == GamePhase.Level || Phase == GamePhase.Endless || Phase == GamePhase.Challenge || Phase == GamePhase.GameOver;
@@ -36,24 +49,10 @@ public class GameManager : MonoBehaviour
     public bool SaveDataOnLevelCompletion => saveDataOnLevelCompletion;
     public bool SaveDataOnLevelLoss => saveDataOnLevelLoss;
     public bool LoadDataOnLaunch => loadDataOnLaunch;
+    #endregion
 
-    public static GameManager Singleton
-    {
-        get
-        {
-            if(singleton == null)
-            {
-                singleton = GameObject.FindGameObjectWithTag("Game Manager").GetComponent<GameManager>();
-            }
-            return singleton;
-        }
-    }
-
-    public void SetGamePhase(GamePhase _phase)
-    {
-        phase = _phase;
-    }
-
+    #region Methods
+    public void SetGamePhase(GamePhase _phase) => phase = _phase;
     public IEnumerator IncrementScore()
     {
         while (IsInGameAndCanMoveCar)
@@ -64,14 +63,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void LoadScoreData ()
+    private void LoadScoreData()
     {
         if (loadDataOnLaunch)
         {
             scoreData = AutoDriverSaveSystem.LoadedScoreData();
         }
     }
-
+    #endregion
 
     private void Start()
     {

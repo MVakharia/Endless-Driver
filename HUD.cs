@@ -9,7 +9,7 @@ public class StatusBar
     [SerializeField]
     [Range(0, 1)]
     private float moveSpeed;
-    public float targetAttributeValue { get; private set; }
+    public float TargetAttributeValue { get; private set; }
     public Slider bar;
     public Image fill;
     public TMP_Text text;
@@ -19,19 +19,35 @@ public class StatusBar
     {
         get
         {
-            displayedAttribute = Mathf.MoveTowards(displayedAttribute, targetAttributeValue, moveSpeed * Time.deltaTime);
+            displayedAttribute = Mathf.MoveTowards(displayedAttribute, TargetAttributeValue, moveSpeed * Time.deltaTime);
             return displayedAttribute;
         }
     }
-    public void SetTargetAttributeValue(float amount) { targetAttributeValue = amount; }
+    public void SetTargetAttributeValue(float amount) => TargetAttributeValue = amount;
 
-    public void SetBarValueToDisplayedAttribute() { bar.value = DisplayedAttribute; }
+    public void SetBarValueToDisplayedAttribute() => bar.value = DisplayedAttribute;
 }
 
 public class HUD : MonoBehaviour
 {
-    #region Fields
+    #region Singleton
     static HUD singleton;
+
+    public static HUD Singleton
+    {
+        get
+        {
+            if (singleton == null)
+            {
+                singleton = GameObject.FindGameObjectWithTag("Game Manager").GetComponent<HUD>();
+            }
+            return singleton;
+        }
+    }
+    #endregion
+
+    #region Fields
+
     [SerializeField]
     StatusBar health;
     [SerializeField]
@@ -48,17 +64,7 @@ public class HUD : MonoBehaviour
     #endregion
 
     #region Properties
-    public static HUD Singleton
-    {
-        get
-        {
-            if (singleton == null)
-            {
-                singleton = GameObject.FindGameObjectWithTag("Game Manager").GetComponent<HUD>();
-            }
-            return singleton;
-        }
-    }
+    
     public PlayerVehicleDrive Drive
     {
         get
@@ -104,10 +110,10 @@ public class HUD : MonoBehaviour
             speedometerDigits[2] = GameObject.Find("Current Speed Third Digit").GetComponent<TMP_Text>();
         }
     }
-    void SetBoostBarColor() { boost.fill.color = BoostBarColor; }
+    void SetBoostBarColor() => boost.fill.color = BoostBarColor;
     void CycleNumber() { if (cyclingNumber > 1) { cyclingNumber = 0; } cyclingNumber += (Time.deltaTime * 2); }
-    void SetHealthBarColor() { health.fill.color = ColorChangingElementHSVToRGB(RedHueNumber, CyanHueNumber, health.bar.value); }
-    void SetHealthAmountText() { health.text.text = HealthAmountToString; }
+    void SetHealthBarColor() => health.fill.color = ColorChangingElementHSVToRGB(RedHueNumber, CyanHueNumber, health.bar.value);
+    void SetHealthAmountText() => health.text.text = HealthAmountToString;
     void ConvertNumberDigitsToTMP_Text(float numberToConvert, string ToStringParam, TMP_Text[] TMP_TextArray)
     {
         double truncatedNumber = Math.Truncate(numberToConvert * 10) / 10;
