@@ -14,7 +14,9 @@ public class PlayerVehicleDrive : VehicleDrive
             return singleton;
         }
     }
-    public void MoveToLocation(Vector3 location) { transform.position = location; }
+
+    #region Properties
+    public void MoveToLocation(Vector3 location) => transform.position = location;
 
     protected override float Acceleration
     {
@@ -29,7 +31,6 @@ public class PlayerVehicleDrive : VehicleDrive
             {
                 return 0;
             }
-
             return base.Acceleration;
         }
     }
@@ -55,6 +56,7 @@ public class PlayerVehicleDrive : VehicleDrive
             }
         }
     }
+    #endregion
 
     private void Update()
     {

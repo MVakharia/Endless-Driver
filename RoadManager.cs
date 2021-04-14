@@ -113,30 +113,22 @@ public class RoadManager : MonoBehaviour
             return mainCamera;
         }
     }
-    public void MakeNewTileOld() { previouslySpawnedTile = newestSpawnedTile; }
-    public void AddToTilesInFrontOfCar(GameObject tile) { tilesInFrontOfCar.Add(tile); }
-    public void RemoveFromTilesInFrontOfCar(GameObject tile) { tilesInFrontOfCar.Remove(tile); }
-    public void AddToTilesBehindCar(GameObject tile) { tilesBehindCar.Add(tile); }
-    public void RemoveFromTilesBehindCar(GameObject tile) { tilesBehindCar.Remove(tile); }
-    public void AddToTilePool(GameObject tile) { tilesInPool.Add(tile); }
-    public void RemoveFromTilePoolAtIndex(int index) { tilesInPool.RemoveAt(index); }
-    public void CheckFinishLineAsSpawned() { finishLineHasSpawned = true; }
-    public void UncheckFinishLineAsSpawned() { finishLineHasSpawned = false; }
-    public void SetRoadFurthestForward(Road road) { roadFurthestForward = road; }
+    public void MakeNewTileOld() => previouslySpawnedTile = newestSpawnedTile;
+    public void AddToTilesInFrontOfCar(GameObject tile) => tilesInFrontOfCar.Add(tile);
+    public void RemoveFromTilesInFrontOfCar(GameObject tile) => tilesInFrontOfCar.Remove(tile);
+    public void AddToTilesBehindCar(GameObject tile) => tilesBehindCar.Add(tile);
+    public void RemoveFromTilesBehindCar(GameObject tile) => tilesBehindCar.Remove(tile);
+    public void AddToTilePool(GameObject tile) => tilesInPool.Add(tile);
+    public void RemoveFromTilePoolAtIndex(int index) => tilesInPool.RemoveAt(index);
+    public void CheckFinishLineAsSpawned() => finishLineHasSpawned = true;
+    public void UncheckFinishLineAsSpawned() => finishLineHasSpawned = false;
+    public void SetRoadFurthestForward(Road road) => roadFurthestForward = road;
 
     private void SetUpMainTile(GameObject tile)
     {
         newestSpawnedTile.mainTile = tile;
         newestSpawnedTile.tileClip = NewestTileClip;
     }
-
-    /*private void SetUpMainTile(GameObject tile, Vector3 tilePosition, Quaternion tileRotation)
-    {
-        newestSpawnedTile.mainTile = tile;
-        newestSpawnedTile.mainTile.transform.position = tilePosition;
-        newestSpawnedTile.mainTile.transform.rotation = tileRotation;
-        newestSpawnedTile.tileClip = NewestTileClip;
-    }*/
     #endregion
 
     private void Update()

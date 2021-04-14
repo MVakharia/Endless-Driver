@@ -5,6 +5,7 @@ using AutoDriverLibrary;
 
 public class MainMenuUIManager : MonoBehaviour
 {
+    #region Fields
     [SerializeField]
     GameObject menuUI;
     [SerializeField]
@@ -15,10 +16,11 @@ public class MainMenuUIManager : MonoBehaviour
     GameObject challengeUI;
     [SerializeField]
     GameObject statsUI;
-
     [SerializeField]
     PlayerStatisticsBoard lifetimeStatBoard;
+    #endregion
 
+    #region Properties
     public void GetMoreCreditsButton() => StartCoroutine(GetMoreCredits());
     public void PlayEndlessModeButton() => StartCoroutine(PlayEndlessMode());
     public void PlayNextLevelButton() => StartCoroutine(PlayNextLevel());
@@ -28,9 +30,10 @@ public class MainMenuUIManager : MonoBehaviour
     public void OpenChallengeModeMenuButton() => StartCoroutine(OpenChallengeModeMenu());
     public void RemoveAdsButton() => StartCoroutine(RemoveAds());
     public void OpenStatisticsButton() => StartCoroutine(OpenStatisticsMenu());
-
     public GameManager Game_Manager => GameManager.Singleton;
+    #endregion
 
+    #region Methods
     public IEnumerator GetMoreCredits()
     {
         Debug.Log("Opening Credit Purchase Menu");
@@ -158,4 +161,5 @@ public class MainMenuUIManager : MonoBehaviour
             lifetimeStatBoard.repairPickupsCollectedTMPText.text = loadedData.repairPacksCollected.ToString();
         }
     }
+    #endregion
 }

@@ -3,32 +3,19 @@
 public class Road : MonoBehaviour
 {
     #region Fields
-    [SerializeField]
-    bool carCrossedRoadOnce;
-    [SerializeField]
-    bool carhasLeftThisTrigger;
-    [SerializeField]
-    float distanceFromCar;
-    [SerializeField]
-    float maxDistanceFromCar;
-    [SerializeField]
-    int numberOfLanes;
-    [SerializeField]
-    int tileNumber;
-    [SerializeField]
-    PlayerVehicleDrive player;
-    [SerializeField]
-    Renderer thisRenderer;
-    [SerializeField]
-    GameObject[] roadObjectSpawnPoints;
-    [SerializeField]
-    GameObject[] objectsOnRoad;
-    [SerializeField]
-    GameObject[] streetLightSpawnPoints;
-    [SerializeField]
-    GameObject[] streetLightSlots;
-    [SerializeField]
-    GameObject finishLineSlot;
+    [SerializeField] bool carCrossedRoadOnce;
+    [SerializeField] bool carhasLeftThisTrigger;
+    [SerializeField] float distanceFromCar;
+    [SerializeField] float maxDistanceFromCar;
+    [SerializeField] int numberOfLanes;
+    [SerializeField] int tileNumber;
+    [SerializeField] PlayerVehicleDrive player;
+    [SerializeField] Renderer thisRenderer;
+    [SerializeField] GameObject[] roadObjectSpawnPoints;
+    [SerializeField] GameObject[] objectsOnRoad;
+    [SerializeField] GameObject[] streetLightSpawnPoints;
+    [SerializeField] GameObject[] streetLightSlots;
+    [SerializeField] GameObject finishLineSlot;
     #endregion
 
     #region Properties
@@ -54,7 +41,7 @@ public class Road : MonoBehaviour
     {
         for (int i = 0; i < numberOfLanes; i++)
         {
-            if(roadObjectSpawnPoints[i] == null)
+            if (roadObjectSpawnPoints[i] == null)
             {
                 roadObjectSpawnPoints[i] = transform.Find("Object Spawn Point " + i.ToString()).gameObject;
             }
@@ -80,18 +67,18 @@ public class Road : MonoBehaviour
     {
         int rand = Random.Range(0, prefabs.Length);
 
-        if(spawnSlots[spawnSlotNumber] == null)
+        if (spawnSlots[spawnSlotNumber] == null)
         {
             spawnSlots[spawnSlotNumber] = Instantiate(prefabs[rand], spawnPoints[spawnSlotNumber].transform.position, spawnPoints[spawnSlotNumber].transform.rotation * rotation);
             spawnSlots[spawnSlotNumber].transform.parent = transform;
         }
     }
 
-    public void SpawnStreetLight ()
+    public void SpawnStreetLight()
     {
         int spawnSlotNumber = -1;
 
-        if(tileNumber % 4 == 0)
+        if (tileNumber % 4 == 0)
         {
             spawnSlotNumber = 0;
         }
@@ -99,20 +86,20 @@ public class Road : MonoBehaviour
         {
             spawnSlotNumber = 1;
         }
-        if(spawnSlotNumber >= 0)
+        if (spawnSlotNumber >= 0)
         {
             SpawnObject(streetLightSpawnPoints, streetLightSlots, TrafficManager.Singleton.StreetLight, spawnSlotNumber, Quaternion.identity);
-        }        
+        }
     }
 
     public void SpawnVehiclesInSlots()
-    { 
-        for (int i = 0; i < roadObjectSpawnPoints.Length; i++) 
-        { 
-            if (Random.Range(0, 4) != 0) 
+    {
+        for (int i = 0; i < roadObjectSpawnPoints.Length; i++)
+        {
+            if (Random.Range(0, 4) != 0)
             {
                 SpawnObjects(roadObjectSpawnPoints, objectsOnRoad, TrafficManager.Singleton.TrafficPrefabs, i, Quaternion.Euler(0, 180, 0));
-            } 
+            }
         }
     }
 
@@ -127,18 +114,18 @@ public class Road : MonoBehaviour
         }
     }
 
-    public void DestroyObjectsOnRoad ()
+    public void DestroyObjectsOnRoad()
     {
         for (int i = 0; i < objectsOnRoad.Length; i++)
         {
-            if(objectsOnRoad[i] != null)
+            if (objectsOnRoad[i] != null)
             {
                 Destroy(objectsOnRoad[i]);
             }
         }
     }
 
-    public void DestroyStreetLightOnRoad ()
+    public void DestroyStreetLightOnRoad()
     {
         for (int i = 0; i < streetLightSlots.Length; i++)
         {
@@ -154,20 +141,20 @@ public class Road : MonoBehaviour
     public void SpawnFinishLine() => finishLineSlot = Instantiate(RoadManager.Singleton.FinishLinePrefab, transform.position + new Vector3(0, 2, 0), transform.rotation, transform);
     public void DestroyFinishLine() => Destroy(finishLineSlot);
 
-    private void MoveFromFrontPoolToRearPool ()
+    private void MoveFromFrontPoolToRearPool()
     {
         RoadManager.Singleton.RemoveFromTilesInFrontOfCar(gameObject);
         RoadManager.Singleton.AddToTilesBehindCar(gameObject);
     }
 
-    private void SetThisTileAsFurthestForward () => RoadManager.Singleton.SetRoadFurthestForward(this);
+    private void SetThisTileAsFurthestForward() => RoadManager.Singleton.SetRoadFurthestForward(this);
 
-    private void MoveFromRearPoolToTilePool ()
+    private void MoveFromRearPoolToTilePool()
     {
         RoadManager.Singleton.RemoveFromTilesBehindCar(gameObject);
         RoadManager.Singleton.AddToTilePool(gameObject);
     }
-    private void CheckFinishLineAsSpawned () => RoadManager.Singleton.CheckFinishLineAsSpawned();    
+    private void CheckFinishLineAsSpawned() => RoadManager.Singleton.CheckFinishLineAsSpawned();
     #endregion
 
     void Start()
@@ -203,7 +190,7 @@ public class Road : MonoBehaviour
             UncheckCarAsLeftTrigger();
         }
 
-        if(FinishLineNotYetPlaced)
+        if (FinishLineNotYetPlaced)
         {
             SpawnFinishLine();
             CheckFinishLineAsSpawned();

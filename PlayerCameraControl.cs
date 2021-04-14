@@ -2,13 +2,15 @@
 
 public class PlayerCameraControl : MonoBehaviour
 {
+    #region Fields
     Camera mainCamera;
-
     [SerializeField]
     GameObject cameraTarget;
     [SerializeField]
     float cameraMoveSpeed;
+    #endregion
 
+    #region Properties
     public Camera MainCamera
     {
         get
@@ -35,12 +37,15 @@ public class PlayerCameraControl : MonoBehaviour
 
     private Vector3 CameraTargetPosition => CameraTarget.transform.position;
     private Quaternion CameraTargetRotation => CameraTarget.transform.rotation;
+    #endregion
 
+    #region Methods
     public void MoveMainCamera()
     {
         MainCamera.transform.position = Vector3.Lerp(MainCamera.transform.position, CameraTargetPosition, cameraMoveSpeed * Time.deltaTime);
         MainCamera.transform.rotation = CameraTargetRotation;
     }
+    #endregion
 
     private void FixedUpdate()
     {

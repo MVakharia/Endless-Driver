@@ -2,8 +2,20 @@
 
 public class PlayerSteering : MonoBehaviour
 {
-    #region Fields
     private static PlayerSteering singleton;
+    public static PlayerSteering Singleton
+    {
+        get
+        {
+            if (singleton == null)
+            {
+                singleton = GameObject.FindGameObjectWithTag("Player Car").GetComponent<PlayerSteering>();
+            }
+            return singleton;
+        }
+    }
+
+    #region Fields    
     [SerializeField]
     GameObject car;
     [SerializeField]
@@ -38,17 +50,7 @@ public class PlayerSteering : MonoBehaviour
         new Vector3(LanePoints[0].transform.position.x, transform.position.y, transform.position.z);    
     Vector3 OffRightBoundary => 
         new Vector3(LanePoints[RoadManager.Singleton.NumberOfLanes - 1].transform.position.x, transform.position.y, transform.position.z);
-    public static PlayerSteering Singleton
-    {
-        get
-        {
-            if (singleton == null)
-            {
-                singleton = GameObject.FindGameObjectWithTag("Player Car").GetComponent<PlayerSteering>();
-            }
-            return singleton;
-        }
-    }
+    
     bool TouchingLeftRail => transform.position == OffLeftBoundary;
     bool TouchingRightRail => transform.position == OffRightBoundary;
     bool WheelIsRotatedAntiClockwise => currentTurnSpeed < 0;
@@ -64,7 +66,7 @@ public class PlayerSteering : MonoBehaviour
 
     #region Methods
     void StraightenWheel() { if (WheelRotationIsWithinDeadzone) { currentTurnSpeed = 0; } }
-    void RotateCar() { transform.rotation = Quaternion.Euler(0, currentTurnSpeed * rotationAngleMultiplier, 0); }
+    void RotateCar() => transform.rotation = Quaternion.Euler(0, currentTurnSpeed * rotationAngleMultiplier, 0);
     void TurnWheelAntiClockwise()
     {
         if (WheelTurnedTooFarAntiClockwise)
@@ -87,10 +89,7 @@ public class PlayerSteering : MonoBehaviour
             currentTurnSpeed += turnAcceleration * Time.deltaTime;
         }
     }
-    void MoveCarHorizontally ()
-    {
-        transform.Translate(new Vector3(currentTurnSpeed, 0, 0) * Time.deltaTime);
-    }
+    void MoveCarHorizontally() => transform.Translate(new Vector3(currentTurnSpeed, 0, 0) * Time.deltaTime);
 
     void PreventCarFromCrossingBoundaries ()
     {

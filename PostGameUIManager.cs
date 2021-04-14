@@ -6,28 +6,21 @@ using AutoDriverLibrary;
 
 public class PostGameUIManager : MonoBehaviour
 {
-    #region Fields
-
     private static PostGameUIManager singleton;
+    public static PostGameUIManager Singleton
+    {
+        get
+        {
+            if (singleton == null) { singleton = GameObject.FindGameObjectWithTag("Game Manager").GetComponent<PostGameUIManager>(); }
+            return singleton;
+        }
+    }
+
+    #region Fields    
     [SerializeField]
     GameObject continueUI;
     [SerializeField]
     GameObject levelCompleteUI;
-    /*
-    [SerializeField]
-    TMP_Text scoreThisRoundTMPText;
-    [SerializeField]
-    TMP_Text distanceTravelledThisRoundTMPText;
-    [SerializeField]
-    TMP_Text damageTakenThisRoundTMPText;
-    [SerializeField]
-    TMP_Text carsDestroyedThisRoundTMPText;
-    [SerializeField]
-    TMP_Text damageRepairedThisRoundTMPText;
-    [SerializeField]
-    TMP_Text repairPickupsCollectedThisRoundTMPText;
-    */
-
     [SerializeField]
     PlayerStatisticsBoard roundEndStatBoard;
     #endregion
@@ -40,24 +33,15 @@ public class PostGameUIManager : MonoBehaviour
     public int CarsDestroyedThisRound => PlayerVehicleInteraction.Singleton.VehiclesDestroyedThisRound.Count;
     public int DamageRepairedThisRound => PlayerVehicleInteraction.Singleton.DamageRepairedThisRound.Count;
     public int RepairPickupsCollectedThisRound => PlayerVehicleInteraction.Singleton.RepairPacksCollectedThisRound.Count;
-
-    public static PostGameUIManager Singleton
-    {
-        get
-        {
-            if (singleton == null) { singleton = GameObject.FindGameObjectWithTag("Game Manager").GetComponent<PostGameUIManager>(); }
-            return singleton;
-        }
-    }
     #endregion
 
     #region Methods
-    private void SetScoreThisRoundText () => roundEndStatBoard.scoreTMPText.text = ScoreThisRound.ToString();
-    private void SetDistanceTravelledThisRoundText () => roundEndStatBoard.distanceTravelledTMPText.text = DistanceTravelledThisRoundInMiles.ToString("0.00") + " miles";
+    private void SetScoreThisRoundText() => roundEndStatBoard.scoreTMPText.text = ScoreThisRound.ToString();
+    private void SetDistanceTravelledThisRoundText() => roundEndStatBoard.distanceTravelledTMPText.text = DistanceTravelledThisRoundInMiles.ToString("0.00") + " miles";
     private void SetDamageTakenThisRoundText() => roundEndStatBoard.damageTakenTMPText.text = DamageTakenThisRound.ToString();
-    private void SetCarsDestroyedThisRoundText () => roundEndStatBoard.carsDestroyedTMPText.text = CarsDestroyedThisRound.ToString();
+    private void SetCarsDestroyedThisRoundText() => roundEndStatBoard.carsDestroyedTMPText.text = CarsDestroyedThisRound.ToString();
     private void SetDamageRepairedThisRoundText() => roundEndStatBoard.damageRepairedTMPText.text = DamageRepairedThisRound.ToString();
-    private void SetRepairPickupsCollectedThisRoundText()  => roundEndStatBoard.repairPickupsCollectedTMPText.text = RepairPickupsCollectedThisRound.ToString();
+    private void SetRepairPickupsCollectedThisRoundText() => roundEndStatBoard.repairPickupsCollectedTMPText.text = RepairPickupsCollectedThisRound.ToString();
     public void ContinueToMainMenuButton() => StartCoroutine(ContinueToMainMenu());
 
     public IEnumerator GameOver()
@@ -111,7 +95,7 @@ public class PostGameUIManager : MonoBehaviour
         SceneManager.LoadSceneAsync(0);
     }
 
-    public IEnumerator ContinueToMainMenu ()
+    public IEnumerator ContinueToMainMenu()
     {
         //save data to google play services
 
@@ -133,20 +117,11 @@ public class PostGameUIManager : MonoBehaviour
     private void AddScoreToLifetimeStats()
     {
         PlayerStatisticsData existingData = AutoDriverSaveSystem.LoadedScoreData();
+        PlayerStatisticsData appendedData = existingData;
 
-        /*if (existingData == null)
-        {
-            
-            SaveSystem.SaveRound1ScoreData(this);
-        }*/
-        //else
-        //{
-            PlayerStatisticsData appendedData = existingData;
+        appendedData.AddStats(this);
 
-            appendedData.AddStats(this);
-
-            AutoDriverSaveSystem.SaveAppendedScoreData(appendedData);
-        //}
+        AutoDriverSaveSystem.SaveAppendedScoreData(appendedData);
     }
     #endregion
 }

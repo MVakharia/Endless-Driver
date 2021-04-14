@@ -7,5 +7,5 @@ public class RepairPackInteraction : MonoBehaviour
     [SerializeField]
     private int healthToRestore;
 
-    public int HealthToRestore { get => healthToRestore; private set => healthToRestore = value; }
+    public int HealthToRestore => healthToRestore;
 }

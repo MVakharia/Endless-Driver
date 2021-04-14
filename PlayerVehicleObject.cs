@@ -2,23 +2,16 @@
 
 public class PlayerVehicleObject : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject[] rearWheels;
+    #region Fields
+    [SerializeField] private GameObject[] rearWheels;
+    [SerializeField] private GameObject[] frontWheels;
+    [SerializeField] private GameObject[] wheels;
+    [SerializeField] private PlayerVehicleInteraction thisVehicleInteraction;
+    [SerializeField] private GameObject thisVehicle;
+    #endregion
 
-    [SerializeField]
-    private GameObject[] frontWheels;
-
-    [SerializeField]
-    private GameObject[] wheels;
-
-    [SerializeField]
-    private PlayerVehicleInteraction thisVehicleInteraction;
-
-    [SerializeField]
-    private GameObject thisVehicle;
-
-    public GameObject ThisVehicle => ThisVehicleInteraction.gameObject;
-    
+    #region Properties
+    public GameObject ThisVehicle => ThisVehicleInteraction.gameObject;    
 
     public PlayerVehicleInteraction ThisVehicleInteraction
     {
@@ -31,17 +24,13 @@ public class PlayerVehicleObject : MonoBehaviour
             return thisVehicleInteraction;
         }
     }
+    #endregion
 
     private void Update()
     {
         for(int i = 0; i < wheels.Length; i++)
         {
             wheels[i].transform.Rotate(new Vector3(PlayerVehicleDrive.Singleton.CurrentSpeedMPS, 0, 0));
-        }
-
-        for(int i = 0; i < frontWheels.Length; i++)
-        {
-            //frontWheels[i].transform.rotation = 
         }
     }
 
@@ -61,8 +50,6 @@ public class PlayerVehicleObject : MonoBehaviour
             RepairPackInteraction repairPack = other.GetComponentInParent<RepairPackInteraction>();
 
             ThisVehicleInteraction.CollectRepairPack(ref repairPack);
-
-
 
             Destroy(other.transform.parent.gameObject);
         }
