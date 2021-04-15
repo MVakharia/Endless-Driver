@@ -3,36 +3,21 @@
 public class VehicleDrive : MonoBehaviour
 {
     #region Fields
-    [SerializeField]
-    protected float normalAcceleration;
-    [SerializeField]
-    protected float boostedAcceleration;
-    [SerializeField]
-    protected float currentSpeedMPS;
-    [SerializeField]
-    protected float currentSpeedMPH;
-    [SerializeField]
-    protected float normalTopSpeedMPH;
-    [SerializeField]
-    protected float boostedTopSpeedMPH;
-    [SerializeField]
-    protected float noughtTo62;
-    [SerializeField]
-    protected bool hasReached62MPH;
-    [SerializeField]
-    protected float noughtTo100;
-    [SerializeField]
-    protected bool hasReached100MPH;
-    [SerializeField]
-    protected bool boostApplied;
-    [SerializeField]
-    protected float boostAmount;
-    [SerializeField]
-    protected float boostCapacity;
-    [SerializeField]
-    protected float boostConsumptionRate;
-    [SerializeField]
-    protected float odometer;
+    [SerializeField] protected float normalAcceleration;
+    [SerializeField] protected float boostedAcceleration;
+    [SerializeField] protected float currentSpeedMPS;
+    [SerializeField] protected float currentSpeedMPH;
+    [SerializeField] protected float normalTopSpeedMPH;
+    [SerializeField] protected float boostedTopSpeedMPH;
+    [SerializeField] protected float noughtTo62;
+    [SerializeField] protected bool hasReached62MPH;
+    [SerializeField] protected float noughtTo100;
+    [SerializeField] protected bool hasReached100MPH;
+    [SerializeField] protected bool boostApplied;
+    [SerializeField] protected float boostAmount;
+    [SerializeField] protected float boostCapacity;
+    [SerializeField] protected float boostConsumptionRate;
+    [SerializeField] protected float odometer;
     #endregion
 
     #region Properties
@@ -40,7 +25,7 @@ public class VehicleDrive : MonoBehaviour
     {
         get
         {
-            if(currentSpeedMPS < 0)
+            if (currentSpeedMPS < 0)
             {
                 currentSpeedMPS = 0;
             }
@@ -53,7 +38,7 @@ public class VehicleDrive : MonoBehaviour
     }
 
     public float CurrentSpeedMPH => currentSpeedMPH;
-    
+
     public float BoostAmount
     {
         get
@@ -90,24 +75,24 @@ public class VehicleDrive : MonoBehaviour
     {
         if (currentSpeedMPH < TopSpeed)
         {
-            CurrentSpeedMPS += Acceleration* Time.deltaTime;
+            CurrentSpeedMPS += Acceleration * Time.deltaTime;
         }
         else if (currentSpeedMPH > TopSpeed)
         {
-            CurrentSpeedMPS -= Acceleration* Time.deltaTime;
+            CurrentSpeedMPS -= Acceleration * Time.deltaTime;
         }
     }
     protected void SetMilesPerHour() => currentSpeedMPH = CalculateMilesPerHour;
     protected void Check62() => hasReached62MPH = true;
     protected void Set0To62Time() { if (currentSpeedMPH > 62 && !hasReached62MPH) { Check62(); noughtTo62 = Time.time; } }
     protected void Check100() => hasReached100MPH = true;
-    protected void Set0To100Time() { if (currentSpeedMPH > 100 && !hasReached100MPH) { Check100(); noughtTo100 = Time.time; } }    
+    protected void Set0To100Time() { if (currentSpeedMPH > 100 && !hasReached100MPH) { Check100(); noughtTo100 = Time.time; } }
     public void SetCurrentSpeedMPS(float amount) => CurrentSpeedMPS = amount;
-    public void ReduceSpeedMPS(float amount) { CurrentSpeedMPS -= amount; }
-    public void ActivateBoostMode() { boostApplied = true; }
-    public void DeactivateBoostMode() { boostApplied = false; }    
-    public void BurnBoostMeter() { BoostAmount -= boostConsumptionRate * Time.deltaTime; }
-    public void AddBoostCharge(float amount) { BoostAmount += amount; }
-    public void UpdateOdometer() { odometer += (currentSpeedMPH / 3600) * Time.deltaTime; }
+    public void ReduceSpeedMPS(float amount) => CurrentSpeedMPS -= amount;
+    public void ActivateBoostMode() => boostApplied = true;
+    public void DeactivateBoostMode() => boostApplied = false;
+    public void BurnBoostMeter() => BoostAmount -= boostConsumptionRate * Time.deltaTime;
+    public void AddBoostCharge(float amount) => BoostAmount += amount;
+    public void UpdateOdometer() => odometer += (currentSpeedMPH / 3600) * Time.deltaTime;
     #endregion
 }

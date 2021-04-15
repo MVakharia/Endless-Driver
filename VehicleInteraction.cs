@@ -4,15 +4,13 @@ public enum CarState { Destroyed, Critical, HeavyDamage, MediumDamage, LightDama
 
 public abstract class VehicleInteraction : MonoBehaviour
 {
-    [SerializeField]
-    protected Counter health;
+    #region Fields
+    [SerializeField]    protected Counter health;
+    [SerializeField]    CarState thisCarState;
+    [SerializeField]    private int damageTakenThisRound;
+    #endregion
 
-    [SerializeField]
-    CarState thisCarState;
-
-    [SerializeField]
-    private int damageTakenThisRound;
-
+    #region Properties
     public Counter Health => health;
 
     public CarState ThisCarState
@@ -21,7 +19,6 @@ public abstract class VehicleInteraction : MonoBehaviour
         {
             float healthAsFloat = health.Count;
             float maxHealthAsFloat = health.upperLimit;
-
 
             if(healthAsFloat == 0)
             {
@@ -52,7 +49,9 @@ public abstract class VehicleInteraction : MonoBehaviour
     }
 
     public int DamageTakenThisRound => damageTakenThisRound;
+    #endregion
 
+    #region
     public void TakeDamage(int amount)
     {
         //play a sound effect
@@ -70,4 +69,5 @@ public abstract class VehicleInteraction : MonoBehaviour
 
         health.Add(amount);
     }
+    #endregion
 }
