@@ -4,33 +4,24 @@ using UnityEngine.UI;
 
 public class TrafficVehicleInteraction : VehicleInteraction
 {
-    [SerializeField]
-    PlayerVehicleInteraction player;
-    [SerializeField]
-    Renderer thisRenderer;
-    [SerializeField]
-    Image thisPanel;
-    [SerializeField]
-    TMP_Text thisPanelText;
-    [SerializeField]
-    int minimumColorDegree;
-    [SerializeField]
-    int maximumColorDegree;
-    [SerializeField]
-    int meshColliderChildNumber;
-    [SerializeField]
-    int canvasChildNumber;
-    [SerializeField]
-    int meshRendererChildNumber;
-    [SerializeField]
-    string vehicleName;
-    [SerializeField]
-    int vehicleWeightKG;
+    #region Fields
+    [SerializeField] PlayerVehicleInteraction player;
+    [SerializeField] Renderer thisRenderer;
+    [SerializeField] Image thisPanel;
+    [SerializeField] TMP_Text thisPanelText;
+    [SerializeField] int minimumColorDegree;
+    [SerializeField] int maximumColorDegree;
+    [SerializeField] int meshColliderChildNumber;
+    [SerializeField] int canvasChildNumber;
+    [SerializeField] int meshRendererChildNumber;
+    [SerializeField] int vehicleWeightKG;
 
-    string[] vehicleNames = new string[] { "Bus", "Compact", "Hybrid", "PickUp", "Sedan", "SUV", "Truck", "Van" };
+    const int defaultMaximumColor = 2;
 
-    int defaultMaximumColor = 2;
+    readonly string[] vehicleNames = new string[] { "Bus", "Compact", "Hybrid", "PickUp", "Sedan", "SUV", "Truck", "Van" };
+    #endregion
 
+    #region Properties
     public PlayerVehicleInteraction Player
     {
         get
@@ -42,7 +33,6 @@ public class TrafficVehicleInteraction : VehicleInteraction
             return player;
         }
     }
-
     public Renderer ThisRenderer
     {
         get
@@ -55,62 +45,15 @@ public class TrafficVehicleInteraction : VehicleInteraction
             return thisRenderer;
         }
     }
-    string VehicleName { get { vehicleName = gameObject.name.Replace("(Clone)", ""); return vehicleName; } }
 
-    private void Start()
-    {        
-        if (health.upperLimit == 0)
-        {
-            health.SetLimits(0, (CalculateMaximumHealth));
-        }
-
-        health.ResetToUpperLimit();
-
-        SetVehicleColor();
-    }
-
-    /// <summary> Calculates the amount of health this vehicle should have when it spawns, relative to the player's maximum health. </summary>
-    private int CalculateMaximumHealth => Random.Range(5, Mathf.RoundToInt((float)Player.Health.upperLimit / 2));
-
-    private void Update()
-    {
-        SetPanelColor();
-
-        thisPanelText.text = Health.Count.ToString();
-    }
-
-    private void SetVehicleColor ()
-    {
-        if (maximumColorDegree == 0)
-        {
-            maximumColorDegree = defaultMaximumColor;
-        }
-
-        int randRed = Random.Range(minimumColorDegree, maximumColorDegree);
-        int randGreen = Random.Range(minimumColorDegree, maximumColorDegree);
-        int randBlue = Random.Range(minimumColorDegree, maximumColorDegree);
-
-        thisRenderer.materials[1].color = new Color((float)randRed / (maximumColorDegree - 1), (float)randGreen / (maximumColorDegree - 1), (float)randBlue / (maximumColorDegree - 1));
-    }
-
-
-
-    private void SetPanelColor ()
-    {
-        thisPanel.color = ColorRelativeToPlayerHealth;
-    }
-
-    /// <summary>
-    /// Returns a color relative to the health of this vehicle divided by the player's health, which will be a number between 0 and 1. 
-    /// </summary>
-    /// <returns></returns>
-    private Color ColorRelativeToPlayerHealth => Color.HSVToRGB(Mathf.Lerp(178, 0, (float)health.Count / (player.Health.upperLimit / 2)) / 360F, 1, 1);
-
+    string VehicleName => gameObject.name.Replace("(Clone)", "");
+    int CalculateMaximumHealth => Random.Range(5, Mathf.RoundToInt((float)Player.Health.upperLimit / 2));
+    Color ColorRelativeToPlayerHealth => Color.HSVToRGB(Mathf.Lerp(178, 0, (float)health.Count / (player.Health.upperLimit / 2)) / 360F, 1, 1);
     public int VehicleWeightKG
     {
         get
         {
-            if(VehicleName.Contains(vehicleNames[1]))
+            if (VehicleName.Contains(vehicleNames[1]))
             {
                 //I am a compact
                 vehicleWeightKG = 1000;
@@ -153,6 +96,42 @@ public class TrafficVehicleInteraction : VehicleInteraction
             return vehicleWeightKG;
         }
     }
-
     public float VehicleWeight => VehicleWeightKG / 200;
+    #endregion
+
+    #region Methods
+    private void SetVehicleColor()
+    {
+        if (maximumColorDegree == 0)
+        {
+            maximumColorDegree = defaultMaximumColor;
+        }
+
+        int randRed = Random.Range(minimumColorDegree, maximumColorDegree);
+        int randGreen = Random.Range(minimumColorDegree, maximumColorDegree);
+        int randBlue = Random.Range(minimumColorDegree, maximumColorDegree);
+
+        thisRenderer.materials[1].color = new Color((float)randRed / (maximumColorDegree - 1), (float)randGreen / (maximumColorDegree - 1), (float)randBlue / (maximumColorDegree - 1));
+    }
+    private void SetPanelColor() => thisPanel.color = ColorRelativeToPlayerHealth;
+    #endregion
+
+    private void Start()
+    {
+        if (health.upperLimit == 0)
+        {
+            health.SetLimits(0, (CalculateMaximumHealth));
+        }
+
+        health.ResetToUpperLimit();
+
+        SetVehicleColor();
+    }
+
+    private void Update()
+    {
+        SetPanelColor();
+
+        thisPanelText.text = Health.Count.ToString();
+    }
 }

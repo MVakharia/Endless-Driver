@@ -64,7 +64,5 @@ public class PlayerVehicleInteraction : VehicleInteraction
     {
         Health.UseUpperLimit();
         Health.UseLowerLimit();
-
-        print(ThisCarState);
     }
 }
