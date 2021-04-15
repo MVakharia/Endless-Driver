@@ -2,36 +2,7 @@
 
 public class TrafficManager : MonoBehaviour
 {
-    #region Fields
     private static TrafficManager singleton;
-    [SerializeField]
-    private ExtendingCounter spawnVehicleOnCount;
-    [SerializeField]
-    private Counter spawnSpannerOnCount;
-    [SerializeField]
-    private Counter vehicleDieRolls;
-    [SerializeField]
-    private int vehicleDieRollSides;
-    [SerializeField]
-    private int vehicleDieRollThreshold;
-    [SerializeField]
-    private GameObject[] trafficPrefabs;
-    [SerializeField]
-    private GameObject[] repairItemPrefabs;
-    [SerializeField]
-    private GameObject streetLightPrefab;
-    [SerializeField]
-    GameObject finishLinePrefab;
-    [SerializeField]
-    private Counter totalRepairPacksSpawned;
-    #endregion
-
-    #region Properties
-    private RoadManager Road_Manager => RoadManager.Singleton;
-    public GameObject[] TrafficPrefabs => trafficPrefabs;
-    public GameObject[] RepairItemPrefabs => repairItemPrefabs;
-    public GameObject StreetLight => streetLightPrefab;
-
     public static TrafficManager Singleton
     {
         get
@@ -43,10 +14,64 @@ public class TrafficManager : MonoBehaviour
             return singleton;
         }
     }
-    public ExtendingCounter SpawnVehicleOnCount => spawnVehicleOnCount;
-    public Counter SpawnSpannerOnCount => spawnSpannerOnCount;
+
+
+    #region Fields
+    [SerializeField]    private ExtendingCounter spawnVehicleOnCount;
+    [SerializeField]    private Counter spawnSpannerOnCount;
+    [SerializeField]    private Counter vehicleDieRolls;
+    [SerializeField]    private int vehicleDieRollSides;
+    [SerializeField]    private int vehicleDieRollThreshold;
+    [SerializeField]    private GameObject[] trafficPrefabs;
+    [SerializeField]    private GameObject[] repairItemPrefabs;
+    [SerializeField]    private GameObject streetLightPrefab;
+    [SerializeField]    GameObject finishLinePrefab;
+    [SerializeField]    private Counter totalRepairPacksSpawned;
     #endregion
 
+    #region Properties
+    private RoadManager Road_Manager => RoadManager.Singleton;
+    public GameObject[] TrafficPrefabs => trafficPrefabs;
+    public GameObject[] RepairItemPrefabs => repairItemPrefabs;
+    public GameObject StreetLight => streetLightPrefab;    
+    public ExtendingCounter SpawnVehicleOnCount => spawnVehicleOnCount;
+    public Counter SpawnSpannerOnCount => spawnSpannerOnCount;
+    public bool CanSpawnObjects
+    {
+        get
+        {
+            switch (GameManager.Singleton.Phase)
+            {
+                case GamePhase.Level: return Road_Manager.RoadTileWithFinishLine > Road_Manager.TilesSpawnedThisRound.Count + (spawnVehicleOnCount.upperLimit);
+                case GamePhase.Endless: return true;
+                default: return false;
+            }
+        }
+    }
+
+    private bool DieRolledAboveThreshold
+    {
+        get
+        {
+            vehicleDieRolls.Increment();
+            return Random.Range(0, vehicleDieRollSides) > vehicleDieRollThreshold;
+        }
+    }
+
+    private bool ReadyToSpawnRepairPacks => CanSpawnObjects && spawnSpannerOnCount.UpperLimitReached;
+    private bool VehicleExtendedCountLimitReached => spawnVehicleOnCount.isUsingExtendedLimit && spawnVehicleOnCount.ExtendedLimitReached;
+    private bool VehicleUpperCountLimitReached => !spawnVehicleOnCount.isUsingExtendedLimit && spawnVehicleOnCount.UpperLimitReached;
+    private bool ReadyToSpawnVehiclesOnDieRoll => CanSpawnObjects && VehicleUpperCountLimitReached;
+    private bool ReadyToSpawnVehiclesOnAdditionalDieRoll => CanSpawnObjects && VehicleExtendedCountLimitReached;
+    private bool FirstVehicleDieRollSuccessful => ReadyToSpawnVehiclesOnDieRoll && DieRolledAboveThreshold;
+    private bool FirstVehicleDieRollFailed => ReadyToSpawnVehiclesOnDieRoll && !DieRolledAboveThreshold;
+    private bool AdditionalVehicleDieRollSuccessful => ReadyToSpawnVehiclesOnAdditionalDieRoll && DieRolledAboveThreshold;
+    private bool AdditionalVehicleDieRollFailed => ReadyToSpawnVehiclesOnAdditionalDieRoll && !DieRolledAboveThreshold;
+    private bool AnyVehicleDieRollFailed => FirstVehicleDieRollFailed || AdditionalVehicleDieRollFailed;
+    private bool AnyVehicleDieRollSuccessful => FirstVehicleDieRollSuccessful || AdditionalVehicleDieRollSuccessful;
+    #endregion
+
+    #region Methods
     private void SpawnRepairPacks()
     {
         spawnSpannerOnCount.ResetToLowerLimit();
@@ -64,47 +89,12 @@ public class TrafficManager : MonoBehaviour
         Road_Manager.RoadFurthestForward.SpawnVehiclesInSlots();
     }
 
-    public bool CanSpawnObjects
-    {
-        get
-        {
-            switch (GameManager.Singleton.Phase)
-            {
-                case GamePhase.Level:
-                    {
-                        return Road_Manager.RoadTileWithFinishLine > Road_Manager.TilesSpawnedThisRound.Count + (spawnVehicleOnCount.upperLimit);
-                    }
-                case GamePhase.Endless:
-                    {
-                        return true;
-                    }
-            }
-            return false;
-        }
-    }
+    private void ExtendVehicleCounterLimitOnDieRollFail() => spawnVehicleOnCount.ExtendLimit(spawnVehicleOnCount.extensionAmount);
+    #endregion
 
-    private bool GetDieRolledAboveThreshold()
-    { 
-        vehicleDieRolls.Increment();
-        return Random.Range(0, vehicleDieRollSides) > vehicleDieRollThreshold;
-    }
 
-    private bool ReadyToSpawnRepairPacks => CanSpawnObjects && spawnSpannerOnCount.UpperLimitReached;
-    private bool VehicleExtendedCountLimitReached => spawnVehicleOnCount.isUsingExtendedLimit && spawnVehicleOnCount.ExtendedLimitReached;
-    private bool VehicleUpperCountLimitReached => !spawnVehicleOnCount.isUsingExtendedLimit && spawnVehicleOnCount.UpperLimitReached;
-    private bool ReadyToSpawnVehiclesOnDieRoll => CanSpawnObjects && VehicleUpperCountLimitReached;
-    private bool ReadyToSpawnVehiclesOnAdditionalDieRoll => CanSpawnObjects && VehicleExtendedCountLimitReached;
-    private bool FirstVehicleDieRollSuccessful => ReadyToSpawnVehiclesOnDieRoll && GetDieRolledAboveThreshold();
-    private bool FirstVehicleDieRollFailed => ReadyToSpawnVehiclesOnDieRoll && !GetDieRolledAboveThreshold();
-    private bool AdditionalVehicleDieRollSuccessful => ReadyToSpawnVehiclesOnAdditionalDieRoll && GetDieRolledAboveThreshold();
-    private bool AdditionalVehicleDieRollFailed => ReadyToSpawnVehiclesOnAdditionalDieRoll && !GetDieRolledAboveThreshold();
-    private bool AnyVehicleDieRollFailed => FirstVehicleDieRollFailed || AdditionalVehicleDieRollFailed;
-    private bool AnyVehicleDieRollSuccessful => FirstVehicleDieRollSuccessful || AdditionalVehicleDieRollSuccessful;
 
-    private void ExtendVehicleCounterLimitOnDieRollFail()
-    {
-        spawnVehicleOnCount.ExtendLimit(spawnVehicleOnCount.extensionAmount);
-    }
+
 
     private void Update()
     {

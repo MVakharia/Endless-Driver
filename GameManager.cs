@@ -23,20 +23,13 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Fields
-    [SerializeField]
-    GamePhase phase;
-    [SerializeField]
-    Counter score;
-    [SerializeField]
-    bool saveDataOnEndlessLoss;
-    [SerializeField]
-    bool saveDataOnLevelCompletion;
-    [SerializeField]
-    bool saveDataOnLevelLoss;
-    [SerializeField]
-    bool loadDataOnLaunch;
-    [SerializeField]
-    PlayerStatisticsData scoreData;
+    [SerializeField] GamePhase phase;
+    [SerializeField] Counter score;
+    [SerializeField] bool saveDataOnEndlessLoss;
+    [SerializeField] bool saveDataOnLevelCompletion;
+    [SerializeField] bool saveDataOnLevelLoss;
+    [SerializeField] bool loadDataOnLaunch;
+    [SerializeField] PlayerStatisticsData scoreData;
     #endregion
 
     #region Properties

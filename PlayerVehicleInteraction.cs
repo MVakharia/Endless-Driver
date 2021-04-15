@@ -15,12 +15,9 @@ public class PlayerVehicleInteraction : VehicleInteraction
     }
 
     #region Fields
-    [SerializeField]
-    private Counter vehiclesDestroyedThisRound;
-    [SerializeField]
-    private Counter damageRepairedThisRound;
-    [SerializeField]
-    private Counter repairPacksCollectedThisRound;
+    [SerializeField] private Counter vehiclesDestroyedThisRound;
+    [SerializeField] private Counter damageRepairedThisRound;
+    [SerializeField] private Counter repairPacksCollectedThisRound;
     #endregion
 
     #region Properties

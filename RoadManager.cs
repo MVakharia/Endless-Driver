@@ -6,51 +6,8 @@ public class RoadManager : MonoBehaviour
     [System.Serializable]
     public class Tile { public GameObject mainTile; public GameObject tileClip; }
 
-    #region Fields
     private static RoadManager singleton;
-    [SerializeField]
-    Camera mainCamera;
-    [SerializeField]
-    GameObject[] roadPrefabs;
-    [SerializeField]
-    [Header("If there are already tiles in the scene, drag in the tile furthest in front of the player.")]
-    Tile newestSpawnedTile;
-    [SerializeField]
-    Tile previouslySpawnedTile;
-    [SerializeField]
-    Vector3 firstTilePosition;
-    [SerializeField]
-    Counter tilesSpawnedThisRound;
-    [SerializeField]
-    List<GameObject> tilesInFrontOfCar;
-    [SerializeField]
-    List<GameObject> tilesBehindCar;
-    [SerializeField]
-    List<GameObject> tilesInPool;
-    [SerializeField]
-    int maximumNumberOfTilesAhead;
-    [SerializeField]
-    int tilePoolCapacity;
-    [SerializeField]
-    int maxTilesBehindCar;
-    [SerializeField]
-    [Range(2, 3)]
-    int numberOfLanes;
-    [SerializeField]
-    GameObject[] lanePoints;
-    [SerializeField]
-    float RoadLengthInMiles;
-    [SerializeField]
-    int roadTileWithFinishLine;
-    [SerializeField]
-    bool finishLineHasSpawned;
-    [SerializeField]
-    GameObject finishLinePrefab;
-    [SerializeField]
-    Road roadFurthestForward;
-    #endregion
 
-    #region Properties
     public static RoadManager Singleton
     {
         get
@@ -62,6 +19,31 @@ public class RoadManager : MonoBehaviour
             return singleton;
         }
     }
+
+    #region Fields    
+    [SerializeField] Camera mainCamera;
+    [SerializeField] GameObject[] roadPrefabs;
+    [SerializeField] [Header("If there are already tiles in the scene, drag in the tile furthest in front of the player.")] Tile newestSpawnedTile;
+    [SerializeField] Tile previouslySpawnedTile;
+    [SerializeField] Vector3 firstTilePosition;
+    [SerializeField] Counter tilesSpawnedThisRound;
+    [SerializeField] List<GameObject> tilesInFrontOfCar;
+    [SerializeField] List<GameObject> tilesBehindCar;
+    [SerializeField] List<GameObject> tilesInPool;
+    [SerializeField] int maximumNumberOfTilesAhead;
+    [SerializeField] int tilePoolCapacity;
+    [SerializeField] int maxTilesBehindCar;
+    [SerializeField] [Range(2, 3)] int numberOfLanes;
+    [SerializeField] GameObject[] lanePoints;
+    [SerializeField] float RoadLengthInMiles;
+    [SerializeField] int roadTileWithFinishLine;
+    [SerializeField] bool finishLineHasSpawned;
+    [SerializeField] GameObject finishLinePrefab;
+    [SerializeField] Road roadFurthestForward;
+    #endregion
+
+    #region Properties
+
     private Vector3 FirstTilePosition
     {
         get
@@ -78,7 +60,7 @@ public class RoadManager : MonoBehaviour
     public bool FinishLineHasSpawned => finishLineHasSpawned;
     public bool NoMoreRoomBehindCar => tilesBehindCar.Count > 0;
     public bool NoMoreRoomInTilePool => tilesInPool.Count > tilePoolCapacity;
-    public int FirstTileXPosition => (numberOfLanes - 2) * 2;    
+    public int FirstTileXPosition => (numberOfLanes - 2) * 2;
     public int NumberOfLanes => numberOfLanes;
     private float RoadLengthInKilometres => RoadLengthInMiles * 1.60934F;
     private float RoadLengthInMetres => RoadLengthInKilometres * 1000;

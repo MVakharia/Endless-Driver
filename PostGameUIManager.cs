@@ -17,12 +17,9 @@ public class PostGameUIManager : MonoBehaviour
     }
 
     #region Fields    
-    [SerializeField]
-    GameObject continueUI;
-    [SerializeField]
-    GameObject levelCompleteUI;
-    [SerializeField]
-    PlayerStatisticsBoard roundEndStatBoard;
+    [SerializeField] GameObject continueUI;
+    [SerializeField] GameObject levelCompleteUI;
+    [SerializeField] PlayerStatisticsBoard roundEndStatBoard;
     #endregion
 
     #region Properties
